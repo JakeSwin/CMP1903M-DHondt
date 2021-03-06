@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -16,19 +17,52 @@ namespace DHondt
 
             for (int i = 3; i < lines.Length; i++)
             {
-                string[] parts = lines[i].Split(',');
+                string[] parts = lines[i].TrimEnd(';').Split(',');
                 string name = parts[0];
                 int votes = int.Parse(parts[1]);
                 string[] seats = parts[2..];
                 all_parties[i - 3] = new Party(name, votes, seats);
             }
 
-            foreach (Party p in all_parties) //Testing loop that all atributes were added correctly
+            for (int i = 0; i < NUM_OF_SEATS; i++) 
             {
-                Console.WriteLine(p.get_party_name());
-                Console.WriteLine(p.get_calculated_votes());
-                p.get_seat_list().ToList().ForEach(i => Console.Write(i + " "));
+                int highest_votes = 0;
+                Party highest_votes_party = null;
+                foreach (Party p in all_parties)
+                {
+                    int calculated_votes = p.get_calculated_votes();
+                    if (calculated_votes > highest_votes) 
+                    {
+                        highest_votes = calculated_votes;
+                        highest_votes_party = p;
+                    }
+                }
+                highest_votes_party.increment_seats();
             }
+
+            List<string> output_lines = new List<string>();
+            output_lines.Add(ELECTION_NAME);
+
+            foreach (Party p in all_parties)
+            {
+                int num_party_seats = p.get_num_of_seats();
+                if (num_party_seats > 0)
+                {
+                    string party_output_lines = "";
+                    string party_name = p.get_party_name();
+                    string[] party_seats = p.get_seat_list()[..num_party_seats];
+
+                    party_output_lines += party_name + ",";
+                    for (int i = 0; i < num_party_seats; i++)
+                    {
+                        party_output_lines += party_seats[i] += i == num_party_seats - 1 ? ";" : ",";
+                    }
+
+                    output_lines.Add(party_output_lines);
+                }
+            }
+
+            File.WriteAllLines("Assessment1TestResultsOutput.txt", output_lines);
         }
     }
 
@@ -60,6 +94,10 @@ namespace DHondt
         public string[] get_seat_list()
         {
             return seat_list;
+        }
+        public int get_num_of_seats()
+        {
+            return num_of_seats;
         }
 
         public void increment_seats()
