@@ -30,14 +30,14 @@ namespace DHondt
                 Party highest_votes_party = null;
                 foreach (Party p in all_parties)
                 {
-                    int calculated_votes = p.get_calculated_votes();
+                    int calculated_votes = p.calculated_votes;
                     if (calculated_votes > highest_votes) 
                     {
                         highest_votes = calculated_votes;
                         highest_votes_party = p;
                     }
                 }
-                highest_votes_party.increment_seats();
+                highest_votes_party.num_of_seats += 1;
             }
 
             List<string> output_lines = new List<string>();
@@ -45,12 +45,12 @@ namespace DHondt
 
             foreach (Party p in all_parties)
             {
-                int num_party_seats = p.get_num_of_seats();
+                int num_party_seats = p.num_of_seats;
                 if (num_party_seats > 0)
                 {
                     string party_output_lines = "";
-                    string party_name = p.get_party_name();
-                    string[] party_seats = p.get_seat_list()[..num_party_seats];
+                    string party_name = p.party_name;
+                    string[] party_seats = p.seat_list[..num_party_seats];
 
                     party_output_lines += party_name + ",";
                     for (int i = 0; i < num_party_seats; i++)
@@ -68,41 +68,38 @@ namespace DHondt
 
     public class Party
     {
-        private string party_name;
-        private int total_votes;
-        private int num_of_seats;
-        private string[] seat_list;
+        private string _party_name;
+        private int _total_votes;
+        private int _num_of_seats;
+        private string[] _seat_list;
 
         public Party(string name, int votes, string[] seats)
         {
-            party_name = name;
-            total_votes = votes;
-            seat_list = seats;
-            num_of_seats = 0;
+            _party_name = name;
+            _total_votes = votes;
+            _seat_list = seats;
+            _num_of_seats = 0;
         }
 
-        public int get_calculated_votes()
+        public int calculated_votes
         {
-            return total_votes / (num_of_seats + 1);
+            get { return _total_votes / (_num_of_seats + 1); }
         }
 
-        public string get_party_name()
+        public string party_name
         {
-            return party_name;
+            get { return _party_name; }
         }
 
-        public string[] get_seat_list()
+        public string[] seat_list
         {
-            return seat_list;
-        }
-        public int get_num_of_seats()
-        {
-            return num_of_seats;
+            get { return _seat_list; }
         }
 
-        public void increment_seats()
+        public int num_of_seats
         {
-            num_of_seats++;
+            get { return _num_of_seats; }  
+            set { _num_of_seats = value; }
         }
     }
 }
