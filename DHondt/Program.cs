@@ -8,12 +8,14 @@ namespace DHondt
     class Program
     {
         static void Main(string[] args)
-        {   //sets up a string array for the data in the text file
+        {   
+            //sets up a string array for the data in the text file
             string[] lines = File.ReadAllLines("Assessment1Data.txt"); 
             string ELECTION_NAME = lines[0];
             int NUM_OF_SEATS = int.Parse(lines[1]);
             int TOTAL_VOTES = int.Parse(lines[2]);
             Party[] all_parties = new Party[lines.Length - 3];
+
             //takes all data from the array, instantiates objects and places it into an array
             for (int i = 3; i < lines.Length; i++) 
             {
@@ -23,6 +25,7 @@ namespace DHondt
                 string[] seats = parts[2..];
                 all_parties[i - 3] = new Party(name, votes, seats);
             }
+
             //the main DHondt loop which calculates the number of seats for each party
             for (int i = 0; i < NUM_OF_SEATS; i++) 
             {
@@ -39,9 +42,11 @@ namespace DHondt
                 }
                 highest_votes_party.num_of_seats += 1;
             }
+
             //creats the list that holds each line of the output textfile
             List<string> output_lines = new List<string>();
             output_lines.Add(ELECTION_NAME);
+
             //looks through each party and if it has 1 or more seat it will add it to the text file
             foreach (Party p in all_parties)
             {
@@ -52,6 +57,7 @@ namespace DHondt
                     string party_name = p.party_name;
                     string[] party_seats = p.seat_list[..num_party_seats];
 
+                    //creates and formats information to be outputted
                     party_output_lines += party_name + ",";
                     for (int i = 0; i < num_party_seats; i++)
                     {
@@ -61,18 +67,20 @@ namespace DHondt
                     output_lines.Add(party_output_lines);
                 }
             }
+
             //outputs the text file
             File.WriteAllLines("Assessment1TestResultsOutput.txt", output_lines);
         }
     }
 
-    public class Party //Class party provides information on all the politcal parties
+    public class Party 
     {
         private string _party_name;
         private int _total_votes;
         private int _num_of_seats;
         private string[] _seat_list;
-        //assignes string and integer values to a field variables 
+
+        //class constructor
         public Party(string name, int votes, string[] seats) 
         {
             _party_name = name;
@@ -80,21 +88,25 @@ namespace DHondt
             _seat_list = seats;
             _num_of_seats = 0;
         }
+
         //returns the calculated votes from the below equation
         public int calculated_votes 
         {
             get { return _total_votes / (_num_of_seats + 1); }
         }
+
         //returns the name of the party 
         public string party_name 
         {
             get { return _party_name; }
         }
+
         //returns the seat list
         public string[] seat_list 
         {
             get { return _seat_list; }
         }
+
         //returns the name of the seats and sets them to int 'value'
         public int num_of_seats 
         {
