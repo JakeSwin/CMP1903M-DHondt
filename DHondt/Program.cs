@@ -40,7 +40,7 @@ namespace DHondt
                         highest_votes_party = p;
                     }
                 }
-                highest_votes_party.num_of_seats += 1;
+                highest_votes_party.increment_seats();
             }
 
             //creats the list that holds each line of the output textfile
@@ -111,7 +111,12 @@ namespace DHondt
         public int num_of_seats 
         {
             get { return _num_of_seats; }  
-            set { _num_of_seats = value; }
+            private set { _num_of_seats = value; }
+        }
+
+        public void increment_seats()
+        {
+            num_of_seats += 1;
         }
     }
 }
